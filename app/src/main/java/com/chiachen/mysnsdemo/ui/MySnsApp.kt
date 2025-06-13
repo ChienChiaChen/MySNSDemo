@@ -107,9 +107,7 @@ internal fun MySnsApp(
                             popUpTo(Screen.Login.route) { inclusive = true }
                         }
                     },
-                    onBackToLogin = {
-                        navController.popBackStack()
-                    }
+                    onNavigateToLogin = { navController.popBackStack() }
                 )
             }
 
