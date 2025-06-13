@@ -1,43 +1,28 @@
 package com.chiachen.mysnsdemo.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration.Indefinite
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.chiachen.mysnsdemo.navigation.Screen
 import com.chiachen.mysnsdemo.ui.login.LoginScreen
 import com.chiachen.mysnsdemo.ui.main.MainScaffoldWithBottomBar
 import com.chiachen.mysnsdemo.ui.register.RegisterScreen
-import com.chiachen.mysnsdemo.ui.timeline.TimelineScreen
 
 @Composable
 fun MySnsApp(
@@ -72,6 +57,10 @@ internal fun MySnsApp(
     snackbarHostState: SnackbarHostState,
 ) {
     val navController = rememberNavController()
+    val isLogged by appState.isLoggedInFlow.collectAsState() // 這個由 Firebase 提供登入狀態
+
+    val startDestination = if (isLogged) Screen.Main.route else Screen.Login.route
+
     Scaffold(
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,
@@ -85,7 +74,7 @@ internal fun MySnsApp(
     ) { _ ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Login.route
+            startDestination = startDestination
         ) {
             composable(Screen.Login.route) {
                 LoginScreen(
@@ -112,7 +101,7 @@ internal fun MySnsApp(
             }
 
             composable(Screen.Main.route) {
-                MainScaffoldWithBottomBar(navController)
+                MainScaffoldWithBottomBar { appState.logout() }
             }
         }
     }

@@ -21,7 +21,7 @@ import com.chiachen.mysnsdemo.ui.timeline.TimelineScreen
 
 
 @Composable
-fun MainScaffoldWithBottomBar(navController: NavHostController) {
+fun MainScaffoldWithBottomBar(logout: () -> Unit) {
     val tabs = listOf(Screen.Timeline, Screen.Me)
     val innerNavController = rememberNavController()
 
@@ -52,7 +52,7 @@ fun MainScaffoldWithBottomBar(navController: NavHostController) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Timeline.route) { TimelineScreen() }
-            composable(Screen.Me.route) { MeScreen() }
+            composable(Screen.Me.route) { MeScreen(logout) }
         }
     }
 }

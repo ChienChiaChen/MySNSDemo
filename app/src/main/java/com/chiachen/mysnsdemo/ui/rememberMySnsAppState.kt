@@ -4,11 +4,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.chiachen.mysnsdemo.util.NetworkMonitor
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
@@ -16,26 +21,24 @@ import kotlinx.coroutines.flow.stateIn
 @Composable
 fun rememberMySnsAppState(
     networkMonitor: NetworkMonitor,
+    auth: FirebaseAuth = Firebase.auth,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    navController: NavHostController = rememberNavController(),
 ): MySnsAppState {
     return remember(
-        navController,
         coroutineScope,
         networkMonitor,
     ) {
         MySnsAppState(
-            navController = navController,
+            auth = auth,
             coroutineScope = coroutineScope,
             networkMonitor = networkMonitor,
         )
     }
 }
 
-
 @Stable
 class MySnsAppState(
-    val navController: NavHostController,
+    private val auth: FirebaseAuth,
     coroutineScope: CoroutineScope,
     networkMonitor: NetworkMonitor,
 ) {
@@ -46,5 +49,32 @@ class MySnsAppState(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = false,
         )
+
+    val authStateFlow: StateFlow<FirebaseUser?> = callbackFlow {
+        val listener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+            trySend(firebaseAuth.currentUser)
+        }
+        auth.addAuthStateListener(listener)
+
+        awaitClose {
+            auth.removeAuthStateListener(listener)
+        }
+    }.stateIn(
+        scope = coroutineScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = auth.currentUser // 初始值：登入狀態
+    )
+
+    val isLoggedInFlow: StateFlow<Boolean> = authStateFlow
+        .map { it != null }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = auth.currentUser != null
+        )
+
+    fun logout() {
+        auth.signOut()
+    }
 
 }
