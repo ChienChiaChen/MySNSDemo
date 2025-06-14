@@ -9,19 +9,21 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.chiachen.mysnsdemo.navigation.Screen
+import com.chiachen.mysnsdemo.ui.MySnsAppState
 import com.chiachen.mysnsdemo.ui.me.MeScreen
 import com.chiachen.mysnsdemo.ui.timeline.TimelineScreen
 
 
 @Composable
-fun MainScaffoldWithBottomBar(logout: () -> Unit) {
+fun MainScaffoldWithBottomBar(appState: MySnsAppState) {
     val tabs = listOf(Screen.Timeline, Screen.Me)
     val innerNavController = rememberNavController()
 
@@ -52,7 +54,15 @@ fun MainScaffoldWithBottomBar(logout: () -> Unit) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Timeline.route) { TimelineScreen() }
-            composable(Screen.Me.route) { MeScreen(logout) }
+            composable(Screen.Me.route) {
+                val userInfo by appState.userInfoFlow.collectAsState()
+
+                MeScreen(
+                    email = userInfo?.email ?: "Unknown",
+                    onLogout = { appState.logout() }
+                )
+
+            }
         }
     }
 }

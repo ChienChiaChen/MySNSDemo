@@ -101,7 +101,7 @@ internal fun MySnsApp(
             }
 
             composable(Screen.Main.route) {
-                MainScaffoldWithBottomBar { appState.logout() }
+                MainScaffoldWithBottomBar(appState)
             }
         }
     }

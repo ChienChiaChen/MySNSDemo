@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import com.chiachen.mysnsdemo.model.UserInfoModel
 import com.chiachen.mysnsdemo.util.NetworkMonitor
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -72,6 +73,20 @@ class MySnsAppState(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = auth.currentUser != null
         )
+
+    val userInfoFlow: StateFlow<UserInfoModel?> = authStateFlow
+        .map { user ->
+            user?.let {
+                UserInfoModel(
+                    uid = it.uid,
+                    email = it.email,
+                    displayName = it.displayName,
+                    photoUrl = it.photoUrl,
+                    isEmailVerified = it.isEmailVerified
+                )
+            }
+        }
+        .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), null)
 
     fun logout() {
         auth.signOut()
