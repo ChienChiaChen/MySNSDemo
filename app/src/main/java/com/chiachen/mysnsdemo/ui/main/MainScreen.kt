@@ -2,7 +2,10 @@ package com.chiachen.mysnsdemo.ui.main
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -27,14 +30,35 @@ fun MainScaffoldWithBottomBar(appState: MySnsAppState) {
     val tabs = listOf(Screen.Timeline, Screen.Me)
     val innerNavController = rememberNavController()
 
+
+    val currentRoute = innerNavController
+        .currentBackStackEntryAsState().value?.destination?.route
+
     Scaffold(
+        floatingActionButton = {
+            if (currentRoute == Screen.Timeline.route) {
+                FloatingActionButton(
+                    onClick = {
+
+                    }
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Create Post")
+                }
+            }
+        },
+
         bottomBar = {
             NavigationBar {
                 tabs.forEach { screen ->
                     val selected =
                         innerNavController.currentBackStackEntryAsState().value?.destination?.route == screen.route
                     NavigationBarItem(
-                        icon = { Icon(Icons.Default.Home, null) }, // 替換 icon
+                        icon = {
+                            if (screen.route == Screen.Timeline.route)
+                                Icon(Icons.Default.Home, null)
+                            else
+                                Icon(Icons.Default.Person, null)
+                        },
                         label = { Text(screen.route) },
                         selected = selected,
                         onClick = {
