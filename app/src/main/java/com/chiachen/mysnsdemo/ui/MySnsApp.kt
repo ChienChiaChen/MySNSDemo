@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.chiachen.mysnsdemo.navigation.Screen
+import com.chiachen.mysnsdemo.ui.createpost.CreatePostScreen
 import com.chiachen.mysnsdemo.ui.login.LoginScreen
 import com.chiachen.mysnsdemo.ui.main.MainScaffoldWithBottomBar
 import com.chiachen.mysnsdemo.ui.register.RegisterScreen

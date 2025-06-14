@@ -21,6 +21,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.chiachen.mysnsdemo.navigation.Screen
 import com.chiachen.mysnsdemo.ui.MySnsAppState
+import com.chiachen.mysnsdemo.ui.createpost.CreatePostScreen
 import com.chiachen.mysnsdemo.ui.me.MeScreen
 import com.chiachen.mysnsdemo.ui.timeline.TimelineScreen
 
@@ -39,7 +40,7 @@ fun MainScaffoldWithBottomBar(appState: MySnsAppState) {
             if (currentRoute == Screen.Timeline.route) {
                 FloatingActionButton(
                     onClick = {
-
+                        innerNavController.navigate(Screen.CreatePost.route)
                     }
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Create Post")
@@ -48,26 +49,28 @@ fun MainScaffoldWithBottomBar(appState: MySnsAppState) {
         },
 
         bottomBar = {
-            NavigationBar {
-                tabs.forEach { screen ->
-                    val selected =
-                        innerNavController.currentBackStackEntryAsState().value?.destination?.route == screen.route
-                    NavigationBarItem(
-                        icon = {
-                            if (screen.route == Screen.Timeline.route)
-                                Icon(Icons.Default.Home, null)
-                            else
-                                Icon(Icons.Default.Person, null)
-                        },
-                        label = { Text(screen.route) },
-                        selected = selected,
-                        onClick = {
-                            innerNavController.navigate(screen.route) {
-                                launchSingleTop = true
-                                restoreState = true
+            if (currentRoute != Screen.CreatePost.route) {
+                NavigationBar {
+                    tabs.forEach { screen ->
+                        val selected =
+                            innerNavController.currentBackStackEntryAsState().value?.destination?.route == screen.route
+                        NavigationBarItem(
+                            icon = {
+                                if (screen.route == Screen.Timeline.route)
+                                    Icon(Icons.Default.Home, null)
+                                else
+                                    Icon(Icons.Default.Person, null)
+                            },
+                            label = { Text(screen.route) },
+                            selected = selected,
+                            onClick = {
+                                innerNavController.navigate(screen.route) {
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
@@ -85,7 +88,10 @@ fun MainScaffoldWithBottomBar(appState: MySnsAppState) {
                     email = userInfo?.email ?: "Unknown",
                     onLogout = { appState.logout() }
                 )
+            }
 
+            composable(Screen.CreatePost.route) {
+                CreatePostScreen(innerNavController)
             }
         }
     }
