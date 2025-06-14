@@ -71,6 +71,6 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
 
-    implementation("androidx.compose.material:material-icons-extended")
-
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.coil.compose)
 }
