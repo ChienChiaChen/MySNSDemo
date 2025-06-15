@@ -39,7 +39,7 @@ fun Post(post: Post, modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = post.displayName,
+                    text = post.email,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -52,13 +52,11 @@ fun Post(post: Post, modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // 貼文內容
             Text(
                 text = post.content,
                 style = MaterialTheme.typography.bodyLarge
             )
 
-            // 貼文圖片（如果有）
             post.imageUrl?.let { imageUrl ->
                 Spacer(modifier = Modifier.height(12.dp))
                 AsyncImage(
@@ -79,10 +77,10 @@ fun Post(post: Post, modifier: Modifier = Modifier) {
 @Composable
 fun PostPreview() {
     val dummyPost = Post(
-        displayName = "Chiachen",
+        email = "s124202468@gmail.com",
         content = "testing content",
         imageUrl = "https://picsum.photos/400",
-        timestamp = System.currentTimeMillis()
+        timestamp = System.currentTimeMillis(),
     )
 
     Post(post = dummyPost)

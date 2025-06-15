@@ -1,8 +1,8 @@
 package com.chiachen.mysnsdemo.model
 
 data class Post(
-    val displayName: String,
-    val content: String,
-    val imageUrl: String?,
-    val timestamp: Long
+    val email: String = "",
+    val content: String = "",
+    val imageUrl: String = "",
+    val timestamp: Long = 0L,
 )
