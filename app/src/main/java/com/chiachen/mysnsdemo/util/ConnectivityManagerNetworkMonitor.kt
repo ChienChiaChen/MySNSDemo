@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 internal class ConnectivityManagerNetworkMonitor @Inject constructor(
@@ -76,4 +77,9 @@ internal class ConnectivityManagerNetworkMonitor @Inject constructor(
 
         else -> activeNetworkInfo?.isConnected
     } ?: false
+
+    override suspend fun networkIsAvailable(): Boolean = withContext(ioDispatcher) {
+        val cm = context.getSystemService<ConnectivityManager>() ?: return@withContext false
+        cm.isCurrentlyConnected()
+    }
 }

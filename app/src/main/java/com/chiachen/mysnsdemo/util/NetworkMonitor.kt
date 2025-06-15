@@ -7,4 +7,5 @@ import kotlinx.coroutines.flow.Flow
  */
 interface NetworkMonitor {
     val isOnline: Flow<Boolean>
+    suspend fun networkIsAvailable(): Boolean
 }

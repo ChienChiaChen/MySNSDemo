@@ -1,14 +1,15 @@
 package com.chiachen.mysnsdemo.ui.createpost
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chiachen.mysnsdemo.data.local.dao.PendingPostDao
+import com.chiachen.mysnsdemo.data.local.entity.PendingPostEntity
+import com.chiachen.mysnsdemo.util.NetworkMonitor
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +22,9 @@ import javax.inject.Inject
 class CreatePostViewModel @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val storage: FirebaseStorage,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val networkMonitor: NetworkMonitor,
+    private val pendingPostDao: PendingPostDao,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CreatePostUiState())
@@ -58,29 +61,39 @@ class CreatePostViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(status = CreatePostStatus.LOADING) }
 
-            try {
-                val imageUrl = imageUri?.let { uploadImage(it, currentUser.uid) } ?: ""
+            val pending = PendingPostEntity(
+                content = content,
+                timestamp = System.currentTimeMillis(),
+                email = currentUser.email ?: "",
+                userId = currentUser.uid,
+                imageUri = imageUri?.toString() ?: ""
+            )
+            val rowId = pendingPostDao.insert(pending)
 
-                val post = hashMapOf(
-                    "content" to content,
-                    "timestamp" to System.currentTimeMillis(),
-                    "email" to (currentUser.email ?: ""),
-                    "userId" to currentUser.uid,
-                    "imageUrl" to imageUrl
-                )
 
-                firestore.collection("posts")
-                    .add(post)
-                    .await()
+            if (networkMonitor.networkIsAvailable()) {
+                try {
+                    val imageUrl = imageUri?.let { uploadImage(it, currentUser.uid) } ?: ""
 
-                _uiState.update { it.copy(status = CreatePostStatus.SUCCESS) }
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        status = CreatePostStatus.ERROR,
-                        errorMessage = e.message
+                    val post = hashMapOf(
+                        "content" to content,
+                        "timestamp" to pending.timestamp,
+                        "email" to pending.email,
+                        "userId" to pending.userId,
+                        "imageUrl" to imageUrl
                     )
+
+                    firestore.collection("posts").add(post).await()
+                    pendingPostDao.deleteById(rowId) // 上傳成功後移除暫存
+
+                    _uiState.update { it.copy(status = CreatePostStatus.SUCCESS) }
+                } catch (e: Exception) {
+                    _uiState.update {
+                        it.copy(status = CreatePostStatus.ERROR, errorMessage = "Post will retry later.")
+                    }
                 }
+            } else {
+                _uiState.update { it.copy(status = CreatePostStatus.SUCCESS) }
             }
         }
     }
