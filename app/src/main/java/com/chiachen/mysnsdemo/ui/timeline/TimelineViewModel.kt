@@ -15,7 +15,6 @@ import javax.inject.Inject
 class TimelineViewModel @Inject constructor(
     private val repository: PostRepository,
     firebaseRepository: FirebaseRepository
-
 ) : ViewModel() {
 
     val postPagingFlow: Flow<PagingData<Post>> = repository

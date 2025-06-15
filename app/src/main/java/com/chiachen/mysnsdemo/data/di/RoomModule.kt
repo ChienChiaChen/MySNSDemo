@@ -2,6 +2,7 @@ package com.chiachen.mysnsdemo.data.di
 
 import android.content.Context
 import androidx.room.Room
+import com.chiachen.mysnsdemo.data.local.dao.PendingPostDao
 import com.chiachen.mysnsdemo.data.local.dao.PostDao
 import com.chiachen.mysnsdemo.data.local.db.AppDatabase
 import dagger.Module
@@ -17,7 +18,7 @@ object RoomModule {
 
     @Singleton
     @Provides
-    fun provideDatabase( @ApplicationContext appContext: Context): AppDatabase {
+    fun provideDatabase(@ApplicationContext appContext: Context): AppDatabase {
         return Room.databaseBuilder(
             appContext,
             AppDatabase::class.java,
@@ -27,4 +28,7 @@ object RoomModule {
 
     @Provides
     fun providePostDao(db: AppDatabase): PostDao = db.postDao()
+
+    @Provides
+    fun providePendingPostDao(db: AppDatabase): PendingPostDao = db.pendingPostDao()
 }
