@@ -35,4 +35,19 @@ class TimelineViewModel @Inject constructor(
                 _uiState.value = TimelineUiState.Success(posts)
             }
     }
+
+    fun reloadPosts(onDone: () -> Unit) {
+        firestore.collection("posts")
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val posts = snapshot.toObjects(Post::class.java)
+                _uiState.value = TimelineUiState.Success(posts)
+                onDone()
+            }
+            .addOnFailureListener { error ->
+                _uiState.value = TimelineUiState.Error(error.message ?: "Unknown error")
+                onDone()
+            }
+    }
 }

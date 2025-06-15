@@ -41,12 +41,14 @@ fun Post(post: Post, modifier: Modifier = Modifier) {
                 Text(
                     text = post.email,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.alignByBaseline()
                 )
                 Text(
                     text = post.timestamp.toFormattedTime(),
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
+                    color = Color.Gray,
+                    modifier = Modifier.alignByBaseline()
                 )
             }
 
