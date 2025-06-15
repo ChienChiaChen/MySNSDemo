@@ -40,6 +40,9 @@ android {
     buildFeatures {
         compose = true
     }
+    ksp {
+        arg("room.incremental", "true")
+    }
 }
 
 dependencies {
@@ -74,5 +77,10 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.coil.compose)
     implementation(libs.accompanist.swiperefresh)
+
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
 
 }
