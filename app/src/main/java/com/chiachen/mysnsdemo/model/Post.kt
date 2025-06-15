@@ -10,11 +10,11 @@ data class Post(
     val timestamp: Long = 0L,
 )
 
-fun Post.toEntity(): PostEntity {
+fun Post.toEntity(id: String): PostEntity {
     return PostEntity(
         id = id,
         content = content,
-        imageUrl = imageUrl.ifBlank { "" },
+        imageUrl = imageUrl.ifBlank { null },
         timestamp = timestamp,
         email = email
     )

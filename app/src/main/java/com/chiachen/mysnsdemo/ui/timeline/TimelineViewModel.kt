@@ -1,53 +1,28 @@
 package com.chiachen.mysnsdemo.ui.timeline
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.chiachen.mysnsdemo.domain.FirebaseRepository
+import com.chiachen.mysnsdemo.domain.PostRepository
 import com.chiachen.mysnsdemo.model.Post
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @HiltViewModel
 class TimelineViewModel @Inject constructor(
-    private val firestore: FirebaseFirestore
+    private val repository: PostRepository,
+    firebaseRepository: FirebaseRepository
+
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<TimelineUiState>(TimelineUiState.Loading)
-    val uiState: StateFlow<TimelineUiState> = _uiState.asStateFlow()
+    val postPagingFlow: Flow<PagingData<Post>> = repository
+        .getPostPagingFlow()
+        .cachedIn(viewModelScope)
 
     init {
-        observePosts()
-    }
-
-    private fun observePosts() {
-        firestore.collection("posts")
-            .orderBy("timestamp", Query.Direction.DESCENDING)
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    _uiState.value = TimelineUiState.Error(error.message ?: "Unknown error")
-                    return@addSnapshotListener
-                }
-
-                val posts = snapshot?.toObjects(Post::class.java) ?: emptyList()
-                _uiState.value = TimelineUiState.Success(posts)
-            }
-    }
-
-    fun reloadPosts(onDone: () -> Unit) {
-        firestore.collection("posts")
-            .orderBy("timestamp", Query.Direction.DESCENDING)
-            .get()
-            .addOnSuccessListener { snapshot ->
-                val posts = snapshot.toObjects(Post::class.java)
-                _uiState.value = TimelineUiState.Success(posts)
-                onDone()
-            }
-            .addOnFailureListener { error ->
-                _uiState.value = TimelineUiState.Error(error.message ?: "Unknown error")
-                onDone()
-            }
+        firebaseRepository.startObservingPosts()
     }
 }

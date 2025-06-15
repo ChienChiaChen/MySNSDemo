@@ -12,8 +12,14 @@ interface PostDao {
     @Query("SELECT * FROM posts ORDER BY timestamp DESC")
     fun getPostsPagingSource(): PagingSource<Int, PostEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(posts: List<PostEntity>)
+
+    @Query("DELETE FROM posts WHERE id IN (:ids)")
+    suspend fun deleteByIds(ids: List<String>)
+
+    @Query("SELECT id FROM posts")
+    suspend fun getAllIds(): List<String>
 
     @Query("DELETE FROM posts")
     suspend fun clearAll()

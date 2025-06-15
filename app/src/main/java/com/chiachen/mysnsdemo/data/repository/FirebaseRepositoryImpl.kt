@@ -20,9 +20,23 @@ class FirebaseRepositoryImpl @Inject constructor(
             .orderBy("timestamp", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error == null && snapshot != null) {
-                    val posts = snapshot.toObjects(Post::class.java)
+                    val postsWithIds = snapshot.documents.mapNotNull { doc ->
+                        val post = doc.toObject(Post::class.java)
+                        post?.toEntity(doc.id)
+                    }
+
+                    val firebaseIds = postsWithIds.map { it.id }
+
                     CoroutineScope(Dispatchers.IO).launch {
-                        postDao.insertAll(posts.map { it.toEntity() })
+                        val localIds = postDao.getAllIds()
+
+                        val idsToDelete = localIds - firebaseIds.toSet()
+
+                        if (idsToDelete.isNotEmpty()) {
+                            postDao.deleteByIds(idsToDelete)
+                        }
+
+                        postDao.insertAll(postsWithIds)
                     }
                 }
             }
