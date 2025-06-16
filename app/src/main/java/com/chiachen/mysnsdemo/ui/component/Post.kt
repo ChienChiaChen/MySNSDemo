@@ -52,15 +52,16 @@ fun Post(post: Post, modifier: Modifier = Modifier) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = post.content,
                 style = MaterialTheme.typography.bodyLarge
             )
 
-            post.imageUrl?.let { imageUrl ->
-                Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+
+            post.imageUrl.takeIf { it.isNotBlank() }?.let { imageUrl ->
                 AsyncImage(
                     model = imageUrl,
                     contentDescription = "Post image",
