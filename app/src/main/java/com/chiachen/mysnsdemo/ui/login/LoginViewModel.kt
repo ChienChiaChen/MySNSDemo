@@ -1,45 +1,53 @@
 package com.chiachen.mysnsdemo.ui.login
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
+import com.chiachen.mysnsdemo.domain.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val auth: FirebaseAuth
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    var email by mutableStateOf("")
-    var password by mutableStateOf("")
-    var isLoading by mutableStateOf(false)
-    var errorMessage by mutableStateOf<String?>(null)
+    private val _uiState = MutableStateFlow(LoginUiState())
+    val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
+
+    fun onEmailChanged(email: String) {
+        _uiState.update { it.copy(email = email) }
+    }
+
+    fun onPasswordChanged(password: String) {
+        _uiState.update { it.copy(password = password) }
+    }
 
     fun login(onSuccess: () -> Unit) {
-        if (email.isBlank() || password.isBlank()) {
-            errorMessage = "Email and password must not be empty"
+        val state = _uiState.value
+        if (state.email.isBlank() || state.password.isBlank()) {
+            _uiState.update { it.copy(errorMessage = "Email and password must not be empty") }
             return
         }
 
-        isLoading = true
-        errorMessage = null
-
+        _uiState.update { it.copy(isLoading = true, errorMessage = null) }
         viewModelScope.launch {
-            try {
-                delay(5_000)
-                auth.signInWithEmailAndPassword(email, password).await()
-                onSuccess()
-            } catch (e: Exception) {
-                errorMessage = e.message ?: "Login failed"
-            } finally {
-                isLoading = false
+            val result = authRepository.login(state.email, state.password)
+
+            _uiState.update {
+                if (result.isSuccess) {
+                    onSuccess()
+                    it.copy(isLoading = false)
+                } else {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = result.exceptionOrNull()?.message ?: "Login failed"
+                    )
+                }
             }
         }
     }

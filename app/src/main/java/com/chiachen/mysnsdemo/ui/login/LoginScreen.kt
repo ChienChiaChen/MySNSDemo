@@ -18,6 +18,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,10 +38,7 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
-    val email = viewModel.email
-    val password = viewModel.password
-    val isLoading = viewModel.isLoading
-    val errorMessage = viewModel.errorMessage
+    val uiState by viewModel.uiState.collectAsState()
 
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -56,8 +54,8 @@ fun LoginScreen(
         Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = email,
-            onValueChange = { viewModel.email = it },
+            value = uiState.email,
+            onValueChange = { viewModel.onEmailChanged(it) },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true
@@ -66,8 +64,8 @@ fun LoginScreen(
         Spacer(Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = password,
-            onValueChange = { viewModel.password = it },
+            value = uiState.password,
+            onValueChange = { viewModel.onPasswordChanged(it) },
             label = { Text("Password") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
@@ -84,14 +82,14 @@ fun LoginScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        if (errorMessage != null) {
-            Text(text = errorMessage, color = Color.Red)
+        if (uiState.errorMessage != null) {
+            Text(text = uiState.errorMessage!!, color = Color.Red)
             Spacer(Modifier.height(8.dp))
         }
 
         Button(
             onClick = { viewModel.login(onLoginSuccess) },
-            enabled = !isLoading,
+            enabled = !uiState.isLoading,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Login")

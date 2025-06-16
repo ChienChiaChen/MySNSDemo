@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,12 +40,8 @@ fun RegisterScreen(
     onRegisterSuccess: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
-    val email = viewModel.email
-    val username = viewModel.username
-    val password = viewModel.password
-    val confirmPassword = viewModel.confirmPassword
-    val isLoading = viewModel.isLoading
-    val errorMessage = viewModel.errorMessage
+    val uiState by viewModel.uiState.collectAsState()
+
 
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
@@ -61,8 +58,8 @@ fun RegisterScreen(
         Spacer(Modifier.height(24.dp))
 
         OutlinedTextField(
-            value = email,
-            onValueChange = { viewModel.email = it },
+            value = uiState.email,
+            onValueChange = { viewModel.onEmailChanged(it) },
             label = { Text("E-Mail") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -71,8 +68,8 @@ fun RegisterScreen(
         Spacer(Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = username,
-            onValueChange = { viewModel.username = it },
+            value = uiState.username,
+            onValueChange = { viewModel.onEmailChanged(it) },
             label = { Text("Username") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -81,8 +78,8 @@ fun RegisterScreen(
         Spacer(Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = password,
-            onValueChange = { viewModel.password = it },
+            value = uiState.password,
+            onValueChange = { viewModel.onEmailChanged(it) },
             label = { Text("Password") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
@@ -100,8 +97,8 @@ fun RegisterScreen(
         Spacer(Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { viewModel.confirmPassword = it },
+            value = uiState.confirmPassword,
+            onValueChange = { viewModel.onConfirmPasswordChanged(it) },
             label = { Text("Input password again") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
@@ -118,8 +115,8 @@ fun RegisterScreen(
 
         Spacer(Modifier.height(24.dp))
 
-        if (errorMessage != null) {
-            Text(text = errorMessage, color = Color.Red)
+        if (uiState.errorMessage != null) {
+            Text(text = uiState.errorMessage!!, color = Color.Red)
             Spacer(Modifier.height(8.dp))
         }
 
@@ -129,7 +126,7 @@ fun RegisterScreen(
         ) {
             Button(
                 onClick = { viewModel.register(onRegisterSuccess) },
-                enabled = !isLoading,
+                enabled = !uiState.isLoading,
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8A56E8))
             ) {
                 Text("Register")

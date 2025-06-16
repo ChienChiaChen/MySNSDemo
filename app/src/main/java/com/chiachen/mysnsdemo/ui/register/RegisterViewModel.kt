@@ -1,53 +1,71 @@
 package com.chiachen.mysnsdemo.ui.register
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
+import com.chiachen.mysnsdemo.domain.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val auth: FirebaseAuth
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    var email by mutableStateOf("")
-    var username by mutableStateOf("")
-    var password by mutableStateOf("")
-    var confirmPassword by mutableStateOf("")
 
-    var isLoading by mutableStateOf(false)
-    var errorMessage by mutableStateOf<String?>(null)
+    private val _uiState = MutableStateFlow(RegisterUiState())
+    val uiState: StateFlow<RegisterUiState> = _uiState.asStateFlow()
+
+    fun onEmailChanged(email: String) {
+        _uiState.update { it.copy(email = email) }
+    }
+
+    fun onUsernameChanged(username: String) {
+        _uiState.update { it.copy(username = username) }
+    }
+
+    fun onPasswordChanged(password: String) {
+        _uiState.update { it.copy(password = password) }
+    }
+
+    fun onConfirmPasswordChanged(confirmPassword: String) {
+        _uiState.update { it.copy(confirmPassword = confirmPassword) }
+    }
+
 
     fun register(
         onSuccess: () -> Unit
     ) {
-        if (email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
-            errorMessage = "Please fill in all fields"
+        val state = _uiState.value
+
+        if (state.email.isBlank() || state.password.isBlank() || state.confirmPassword.isBlank()) {
+            _uiState.update { it.copy(errorMessage = "Please fill in all fields") }
             return
         }
 
-        if (password != confirmPassword) {
-            errorMessage = "Passwords do not match"
+        if (state.password != state.confirmPassword) {
+            _uiState.update { it.copy(errorMessage = "Passwords do not match") }
             return
         }
-
-        isLoading = true
-        errorMessage = null
+        _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
         viewModelScope.launch {
-            try {
-                auth.createUserWithEmailAndPassword(email, password).await()
-                onSuccess()
-            } catch (e: Exception) {
-                errorMessage = e.message ?: "Registration failed"
-            } finally {
-                isLoading = false
+            val result = authRepository.register(state.email, state.password)
+
+            _uiState.update {
+                if (result.isSuccess) {
+                    onSuccess()
+                    it.copy(isLoading = false)
+                } else {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = result.exceptionOrNull()?.message ?: "Registration failed"
+                    )
+                }
             }
         }
     }
