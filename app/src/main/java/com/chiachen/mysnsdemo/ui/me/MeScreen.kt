@@ -14,18 +14,24 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun MeScreen(
     email: String,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    viewModel: MeViewModel = hiltViewModel()
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -56,7 +62,12 @@ fun MeScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = onLogout,
+            onClick = {
+                coroutineScope.launch {
+                    viewModel.logout()
+                    onLogout()
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
