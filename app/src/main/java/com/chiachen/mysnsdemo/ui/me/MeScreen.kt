@@ -56,7 +56,7 @@ fun MeScreen(
                     color = MaterialTheme.colorScheme.surfaceVariant,
                     shape = RoundedCornerShape(8.dp)
                 )
-                .padding(16.dp) // 內距
+                .padding(16.dp)
         )
 
         Spacer(modifier = Modifier.height(32.dp))

@@ -63,7 +63,7 @@ class MySnsAppState(
     }.stateIn(
         scope = coroutineScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = auth.currentUser // 初始值：登入狀態
+        initialValue = auth.currentUser
     )
 
     val isLoggedInFlow: StateFlow<Boolean> = authStateFlow

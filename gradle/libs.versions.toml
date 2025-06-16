@@ -2,12 +2,14 @@
 accompanistSwiperefresh = "0.33.2-alpha"
 agp = "8.7.2"
 coilCompose = "2.4.0"
+coreTesting = "2.2.0"
 hiltWork = "1.2.0"
 kotlin = "2.0.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
+kotlinxCoroutinesTest = "1.10.2"
 lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
 composeBom = "2024.04.01"
@@ -18,6 +20,7 @@ ksp = "2.1.21-2.0.2"
 
 firebase-bom = "32.7.1"
 firebase = "4.4.0"
+mockk = "1.13.8"
 pagingCompose = "3.3.6"
 pagingRuntimeKtx = "3.3.6"
 roomVersion = "2.7.1"
@@ -61,6 +64,8 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -58,7 +58,7 @@ internal fun MySnsApp(
     snackbarHostState: SnackbarHostState,
 ) {
     val navController = rememberNavController()
-    val isLogged by appState.isLoggedInFlow.collectAsState() // 這個由 Firebase 提供登入狀態
+    val isLogged by appState.isLoggedInFlow.collectAsState()
 
     val startDestination = if (isLogged) Screen.Main.route else Screen.Login.route
 
