@@ -1,11 +1,14 @@
 package com.chiachen.mysnsdemo.ui.createpost
 
+import android.app.Application
 import android.net.Uri
-import androidx.lifecycle.ViewModel
+import androidx.core.net.toUri
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.chiachen.mysnsdemo.data.local.dao.PendingPostDao
 import com.chiachen.mysnsdemo.data.local.entity.PendingPostEntity
 import com.chiachen.mysnsdemo.util.NetworkMonitor
+import com.chiachen.mysnsdemo.util.copyUriToFile
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -20,12 +23,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreatePostViewModel @Inject constructor(
+    private val application: Application,
     private val firestore: FirebaseFirestore,
     private val storage: FirebaseStorage,
     private val auth: FirebaseAuth,
     private val networkMonitor: NetworkMonitor,
     private val pendingPostDao: PendingPostDao,
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(CreatePostUiState())
     val uiState: StateFlow<CreatePostUiState> = _uiState.asStateFlow()
@@ -61,19 +65,21 @@ class CreatePostViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(status = CreatePostStatus.LOADING) }
 
+            val imageFile = imageUri?.let { copyUriToFile(application, it) }
+            val imageUriStr = imageFile?.toUri()?.toString() ?: ""
+
             val pending = PendingPostEntity(
                 content = content,
                 timestamp = System.currentTimeMillis(),
                 email = currentUser.email ?: "",
                 userId = currentUser.uid,
-                imageUri = imageUri?.toString() ?: ""
+                imageUri = imageUriStr
             )
             val rowId = pendingPostDao.insert(pending)
 
-
             if (networkMonitor.networkIsAvailable()) {
                 try {
-                    val imageUrl = imageUri?.let { uploadImage(it, currentUser.uid) } ?: ""
+                    val imageUrl = imageFile?.let { uploadImage(it.toUri(), currentUser.uid) } ?: ""
 
                     val post = hashMapOf(
                         "content" to content,
@@ -84,7 +90,10 @@ class CreatePostViewModel @Inject constructor(
                     )
 
                     firestore.collection("posts").add(post).await()
-                    pendingPostDao.deleteById(rowId) // 上傳成功後移除暫存
+                    pendingPostDao.deleteById(rowId)
+                    if (imageFile?.exists() == true) {
+                        imageFile.delete()
+                    }
 
                     _uiState.update { it.copy(status = CreatePostStatus.SUCCESS) }
                 } catch (e: Exception) {
