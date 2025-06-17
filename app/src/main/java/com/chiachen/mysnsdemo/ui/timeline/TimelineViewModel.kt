@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.chiachen.mysnsdemo.domain.FirebaseRepository
-import com.chiachen.mysnsdemo.domain.PostRepository
-import com.chiachen.mysnsdemo.model.Post
+import com.chiachen.mysnsdemo.domain.repository.FirebaseRepository
+import com.chiachen.mysnsdemo.domain.repository.PostRepository
+import com.chiachen.mysnsdemo.domain.model.Post
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

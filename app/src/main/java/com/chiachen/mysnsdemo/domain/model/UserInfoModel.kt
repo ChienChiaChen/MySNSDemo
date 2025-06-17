@@ -1,4 +1,4 @@
-package com.chiachen.mysnsdemo.model
+package com.chiachen.mysnsdemo.domain.model
 
 import android.net.Uri
 

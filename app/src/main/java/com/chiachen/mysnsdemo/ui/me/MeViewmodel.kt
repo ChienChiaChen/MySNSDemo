@@ -1,7 +1,7 @@
 package com.chiachen.mysnsdemo.ui.me
 
 import androidx.lifecycle.ViewModel
-import com.chiachen.mysnsdemo.domain.PostRepository
+import com.chiachen.mysnsdemo.domain.repository.PostRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

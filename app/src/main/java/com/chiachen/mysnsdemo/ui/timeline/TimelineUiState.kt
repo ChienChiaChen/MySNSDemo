@@ -1,6 +1,6 @@
 package com.chiachen.mysnsdemo.ui.timeline
 
-import com.chiachen.mysnsdemo.model.Post
+import com.chiachen.mysnsdemo.domain.model.Post
 
 sealed interface TimelineUiState {
     object Loading : TimelineUiState

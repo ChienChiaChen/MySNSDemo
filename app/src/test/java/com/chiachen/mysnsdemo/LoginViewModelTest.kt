@@ -1,6 +1,6 @@
 package com.chiachen.mysnsdemo
 
-import com.chiachen.mysnsdemo.domain.AuthRepository
+import com.chiachen.mysnsdemo.domain.repository.AuthRepository
 import com.chiachen.mysnsdemo.ui.login.LoginViewModel
 import io.mockk.coEvery
 import io.mockk.mockk

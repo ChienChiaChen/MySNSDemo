@@ -1,8 +1,8 @@
-package com.chiachen.mysnsdemo.domain
+package com.chiachen.mysnsdemo.domain.repository
 
 import android.net.Uri
 import androidx.paging.PagingData
-import com.chiachen.mysnsdemo.model.Post
+import com.chiachen.mysnsdemo.domain.model.Post
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
 

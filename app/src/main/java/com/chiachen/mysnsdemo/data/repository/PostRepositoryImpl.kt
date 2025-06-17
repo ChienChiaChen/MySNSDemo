@@ -11,8 +11,8 @@ import com.chiachen.mysnsdemo.data.local.dao.PendingPostDao
 import com.chiachen.mysnsdemo.data.local.dao.PostDao
 import com.chiachen.mysnsdemo.data.local.entity.PendingPostEntity
 import com.chiachen.mysnsdemo.data.local.entity.toUiModel
-import com.chiachen.mysnsdemo.domain.PostRepository
-import com.chiachen.mysnsdemo.model.Post
+import com.chiachen.mysnsdemo.domain.repository.PostRepository
+import com.chiachen.mysnsdemo.domain.model.Post
 import com.chiachen.mysnsdemo.util.NetworkMonitor
 import com.chiachen.mysnsdemo.util.copyUriToFile
 import com.google.firebase.auth.FirebaseUser

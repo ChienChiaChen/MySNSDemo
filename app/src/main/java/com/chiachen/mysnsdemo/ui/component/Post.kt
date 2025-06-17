@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.chiachen.mysnsdemo.model.Post
+import com.chiachen.mysnsdemo.domain.model.Post
 import com.chiachen.mysnsdemo.util.toFormattedTime
 
 @Composable

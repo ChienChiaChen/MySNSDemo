@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import com.chiachen.mysnsdemo.model.UserInfoModel
+import com.chiachen.mysnsdemo.domain.model.UserInfoModel
 import com.chiachen.mysnsdemo.util.NetworkMonitor
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

@@ -3,7 +3,7 @@ package com.chiachen.mysnsdemo.ui.createpost
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.chiachen.mysnsdemo.domain.PostRepository
+import com.chiachen.mysnsdemo.domain.repository.PostRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

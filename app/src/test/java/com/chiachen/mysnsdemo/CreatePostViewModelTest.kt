@@ -1,7 +1,7 @@
 package com.chiachen.mysnsdemo
 
 import android.net.Uri
-import com.chiachen.mysnsdemo.domain.PostRepository
+import com.chiachen.mysnsdemo.domain.repository.PostRepository
 import com.chiachen.mysnsdemo.ui.createpost.CreatePostStatus
 import com.chiachen.mysnsdemo.ui.createpost.CreatePostViewModel
 import com.google.firebase.auth.FirebaseAuth

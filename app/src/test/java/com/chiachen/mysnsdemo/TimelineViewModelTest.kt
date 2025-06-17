@@ -4,11 +4,10 @@ import androidx.paging.AsyncPagingDataDiffer
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
-import com.chiachen.mysnsdemo.domain.FirebaseRepository
-import com.chiachen.mysnsdemo.domain.PostRepository
-import com.chiachen.mysnsdemo.model.Post
+import com.chiachen.mysnsdemo.domain.repository.FirebaseRepository
+import com.chiachen.mysnsdemo.domain.repository.PostRepository
+import com.chiachen.mysnsdemo.domain.model.Post
 import com.chiachen.mysnsdemo.ui.timeline.TimelineViewModel
-import com.google.common.base.Verify.verify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

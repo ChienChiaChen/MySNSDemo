@@ -2,7 +2,7 @@ package com.chiachen.mysnsdemo.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.chiachen.mysnsdemo.model.Post
+import com.chiachen.mysnsdemo.domain.model.Post
 
 @Entity(tableName = "posts")
 data class PostEntity(

@@ -1,6 +1,6 @@
 package com.chiachen.mysnsdemo
 
-import com.chiachen.mysnsdemo.domain.PostRepository
+import com.chiachen.mysnsdemo.domain.repository.PostRepository
 import com.chiachen.mysnsdemo.ui.me.MeViewModel
 import io.mockk.coVerify
 import io.mockk.mockk

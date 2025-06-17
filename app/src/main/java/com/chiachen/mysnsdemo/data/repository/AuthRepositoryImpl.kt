@@ -1,6 +1,6 @@
 package com.chiachen.mysnsdemo.data.repository
 
-import com.chiachen.mysnsdemo.domain.AuthRepository
+import com.chiachen.mysnsdemo.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject

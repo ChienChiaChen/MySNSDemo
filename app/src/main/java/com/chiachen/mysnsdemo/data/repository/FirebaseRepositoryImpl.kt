@@ -1,9 +1,9 @@
 package com.chiachen.mysnsdemo.data.repository
 
 import com.chiachen.mysnsdemo.data.local.dao.PostDao
-import com.chiachen.mysnsdemo.domain.FirebaseRepository
-import com.chiachen.mysnsdemo.model.Post
-import com.chiachen.mysnsdemo.model.toEntity
+import com.chiachen.mysnsdemo.domain.repository.FirebaseRepository
+import com.chiachen.mysnsdemo.domain.model.Post
+import com.chiachen.mysnsdemo.domain.model.toEntity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.CoroutineScope

@@ -1,4 +1,4 @@
-package com.chiachen.mysnsdemo.domain
+package com.chiachen.mysnsdemo.domain.repository
 
 interface AuthRepository {
     suspend fun login(email: String, password: String): Result<Unit>

@@ -3,9 +3,9 @@ package com.chiachen.mysnsdemo.data.di
 import com.chiachen.mysnsdemo.data.repository.AuthRepositoryImpl
 import com.chiachen.mysnsdemo.data.repository.FirebaseRepositoryImpl
 import com.chiachen.mysnsdemo.data.repository.PostRepositoryImpl
-import com.chiachen.mysnsdemo.domain.AuthRepository
-import com.chiachen.mysnsdemo.domain.FirebaseRepository
-import com.chiachen.mysnsdemo.domain.PostRepository
+import com.chiachen.mysnsdemo.domain.repository.AuthRepository
+import com.chiachen.mysnsdemo.domain.repository.FirebaseRepository
+import com.chiachen.mysnsdemo.domain.repository.PostRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
