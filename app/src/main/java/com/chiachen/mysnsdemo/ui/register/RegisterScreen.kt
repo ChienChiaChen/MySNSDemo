@@ -69,7 +69,7 @@ fun RegisterScreen(
 
         OutlinedTextField(
             value = uiState.username,
-            onValueChange = { viewModel.onEmailChanged(it) },
+            onValueChange = { viewModel.onUsernameChanged(it) },
             label = { Text("Username") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -79,7 +79,7 @@ fun RegisterScreen(
 
         OutlinedTextField(
             value = uiState.password,
-            onValueChange = { viewModel.onEmailChanged(it) },
+            onValueChange = { viewModel.onPasswordChanged(it) },
             label = { Text("Password") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
